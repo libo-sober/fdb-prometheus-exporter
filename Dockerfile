@@ -1,7 +1,9 @@
 ARG FDB_VERSION=6.3.12
+ARG FDB_PREVIOUS_MINOR_VERSION=6.2.30
 FROM foundationdb/foundationdb:${FDB_VERSION} as fdb
 FROM golang:1.13.6-stretch
 ARG FDB_VERSION
+ARG FDB_PREVIOUS_MINOR_VERSION
 
 RUN apt update
 # dnsutils is needed to have dig installed to create cluster file
@@ -13,6 +15,9 @@ RUN wget "https://www.foundationdb.org/downloads/${FDB_VERSION}/ubuntu/installer
 RUN dpkg -i foundationdb-clients_${FDB_VERSION}-1_amd64.deb
 
 COPY --from=fdb /var/fdb/scripts/create_cluster_file.bash /
+
+WORKDIR /fdb-previous-libs
+RUN wget "https://foundationdb-origin.apple.com/downloads/${FDB_PREVIOUS_MINOR_VERSION}/linux/libfdb_c_${FDB_PREVIOUS_MINOR_VERSION}.so"
 
 WORKDIR /go/src/app
 COPY . .
