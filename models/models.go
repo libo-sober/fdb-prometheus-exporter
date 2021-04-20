@@ -132,11 +132,21 @@ type FDBClusterStatus struct {
 			} `json:"read"`
 		} `json:"keys"`
 		Operations struct {
+			MemoryErrors struct {
+				Counter   float64 `json:"counter"`
+				Hz        float64 `json:"hz"`
+				Roughness float64 `json:"roughness"`
+			} `json:"memory_errors"`
 			ReadRequests struct {
 				Counter   float64 `json:"counter"`
 				Hz        float64 `json:"hz"`
 				Roughness float64 `json:"roughness"`
 			} `json:"read_requests"`
+			LowPriorityReads struct {
+				Counter   float64 `json:"counter"`
+				Hz        float64 `json:"hz"`
+				Roughness float64 `json:"roughness"`
+			} `json:"low_priority_reads"`
 			Reads struct {
 				Counter   float64 `json:"counter"`
 				Hz        float64 `json:"hz"`
@@ -274,6 +284,14 @@ type FDBClusterMachineStatus struct {
 	} `json:"network"`
 }
 
+type FDBMessage struct {
+	Description   *string  `json:"description"`
+	Name          string   `json:"name"`
+	RawLogMessage *string  `json:"raw_log_message"`
+	Time          *float64 `json:"time"`
+	Type          *string  `json:"type"`
+}
+
 // FDBClusterProcessStatus represents a Process status
 type FDBClusterProcessStatus struct {
 	Address     string `json:"address"`
@@ -313,7 +331,7 @@ type FDBClusterProcessStatus struct {
 		UnusedAllocatedMemory float64 `json:"unused_allocated_memory"`
 		UsedBytes             float64 `json:"used_bytes"`
 	} `json:"memory"`
-	Messages []interface{} `json:"messages"`
+	Messages []FDBMessage `json:"messages"`
 	Network  struct {
 		ConnectionErrors struct {
 			Hz float64 `json:"hz"`
