@@ -2,10 +2,12 @@ package models
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
+	"strconv"
 	"strings"
 )
 
 var processLabels = []string{"process_id", "machine_id", "address", "fault_domain", "role"}
+var processMessageLabels = []string{"process_id", "machine_id", "address", "fault_domain", "role", "name", "type", "index"}
 var roleLabels = []string{"process_id", "machine_id", "address", "fault_domain", "id", "role"}
 var allProcessMetrics []*prometheus.GaugeVec
 var allRoleMetrics []*prometheus.GaugeVec
@@ -22,6 +24,12 @@ func ClearAll() {
 
 func NewProcessGaugeVec(opts prometheus.GaugeOpts) *prometheus.GaugeVec {
 	vec := prometheus.NewGaugeVec(opts, processLabels)
+	allProcessMetrics = append(allProcessMetrics, vec)
+	return vec
+}
+
+func NewProcessMessageGaugeVec(opts prometheus.GaugeOpts) *prometheus.GaugeVec {
+	vec := prometheus.NewGaugeVec(opts, processMessageLabels)
 	allProcessMetrics = append(allProcessMetrics, vec)
 	return vec
 }
@@ -101,6 +109,11 @@ var (
 	processMemoryInfoUsedBytes = NewProcessGaugeVec(prometheus.GaugeOpts{
 		Name: "fdb_processes_memory_used_bytes",
 		Help: "process memory info",
+	})
+
+	processMessage = NewProcessMessageGaugeVec(prometheus.GaugeOpts{
+		Name: "fdb_process_message",
+		Help: "process message",
 	})
 
 	processNetworkConnectionError = NewProcessGaugeVec(prometheus.GaugeOpts{
@@ -349,6 +362,23 @@ func (s FDBStatus) ExportProcesses() {
 		processMemoryInfoUnusedMemory.With(labels).Set(info.Memory.UnusedAllocatedMemory)
 
 		processMemoryInfoUsedBytes.With(labels).Set(info.Memory.UsedBytes)
+
+		// process message
+		for index, message := range info.Messages {
+			if message.Type != nil && message.Time != nil {
+				messageLabels := prometheus.Labels{
+					"process_id":   process,
+					"machine_id":   info.Locality.Machineid,
+					"address":      info.Address,
+					"fault_domain": info.FaultDomain,
+					"role":         strings.Join(roleNames, ","),
+					"name":         message.Name,
+					"type":         *message.Type,
+					"index":        strconv.Itoa(index),
+				}
+				processMessage.With(messageLabels).Set(*message.Time)
+			}
+		}
 
 		// network
 		processNetworkConnectionError.With(labels).Set(info.Network.ConnectionErrors.Hz)

@@ -36,7 +36,7 @@ var (
 		Name: "fdb_workload_keys_roughness",
 		Help: "Workload keys roughness",
 	}, []string{"operation"})
-	
+
 	workloadOperationsHZ = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "fdb_workload_operations_per_second",
 		Help: "Workload operations per second",
@@ -107,6 +107,18 @@ func (s FDBStatus) ExportWorkload() {
 	}).Set(s.Cluster.Workload.Keys.Read.Roughness)
 
 	workloadOperationsHZ.With(prometheus.Labels{
+		"operation": "memory_errors",
+	}).Set(s.Cluster.Workload.Operations.MemoryErrors.Hz)
+
+	workloadOperationsCounter.With(prometheus.Labels{
+		"operation": "memory_errors",
+	}).Set(s.Cluster.Workload.Operations.MemoryErrors.Counter)
+
+	workloadOperationsRoughness.With(prometheus.Labels{
+		"operation": "memory_errors",
+	}).Set(s.Cluster.Workload.Operations.MemoryErrors.Roughness)
+
+	workloadOperationsHZ.With(prometheus.Labels{
 		"operation": "read_requests",
 	}).Set(s.Cluster.Workload.Operations.ReadRequests.Hz)
 
@@ -117,6 +129,18 @@ func (s FDBStatus) ExportWorkload() {
 	workloadOperationsRoughness.With(prometheus.Labels{
 		"operation": "read_requests",
 	}).Set(s.Cluster.Workload.Operations.ReadRequests.Roughness)
+
+	workloadOperationsHZ.With(prometheus.Labels{
+		"operation": "low_priority_reads",
+	}).Set(s.Cluster.Workload.Operations.LowPriorityReads.Hz)
+
+	workloadOperationsCounter.With(prometheus.Labels{
+		"operation": "low_priority_reads",
+	}).Set(s.Cluster.Workload.Operations.LowPriorityReads.Counter)
+
+	workloadOperationsRoughness.With(prometheus.Labels{
+		"operation": "low_priority_reads",
+	}).Set(s.Cluster.Workload.Operations.LowPriorityReads.Roughness)
 
 	workloadOperationsHZ.With(prometheus.Labels{
 		"operation": "reads",
