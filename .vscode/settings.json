@@ -1,0 +1,1 @@
+{"nix.enableLanguageServer":true,"nix.formatterPath":"/nix/store/3zvb3yjf44zad68nzzh11bqrxmhi8q1v-nixpkgs-fmt-1.2.0/bin/nixpkgs-fmt","nix.serverPath":"/nix/store/vs4i3hq2dilsil153vgqyyqrb1yjzsic-rnix-lsp-0.2.1/bin/rnix-lsp","yaml.schemaStore.enable":true,"yaml.schemas":{"https://json.schemastore.org/github-workflow.json":".github/workflows/*.yaml"}}

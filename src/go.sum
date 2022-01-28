@@ -7,6 +7,8 @@ github.com/apple/foundationdb/bindings/go v0.0.0-20210420032056-0511906b887e h1:
 github.com/apple/foundationdb/bindings/go v0.0.0-20210420032056-0511906b887e/go.mod h1:w63jdZTFCtvdjsUj5yrdKgjxaAD5uXQX6hJ7EaiLFRs=
 github.com/apple/foundationdb/bindings/go v0.0.0-20210420065902-75425b5a24ea h1:qDtfYQ5qwbkhaG7nPPqLA3qSZTJPM4Cn+LNhXk8HFeQ=
 github.com/apple/foundationdb/bindings/go v0.0.0-20210420065902-75425b5a24ea/go.mod h1:w63jdZTFCtvdjsUj5yrdKgjxaAD5uXQX6hJ7EaiLFRs=
+github.com/apple/foundationdb/bindings/go v0.0.0-20211207225159-47b9a81d1c10 h1:xU6bzJilZ630rLUhRsqWgJjSl2PCn5uLrehoG6ntwls=
+github.com/apple/foundationdb/bindings/go v0.0.0-20211207225159-47b9a81d1c10/go.mod h1:w63jdZTFCtvdjsUj5yrdKgjxaAD5uXQX6hJ7EaiLFRs=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=

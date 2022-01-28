@@ -3,7 +3,7 @@ module github.com/PierreZ/fdb-prometheus-exporter
 go 1.13
 
 require (
-	github.com/apple/foundationdb/bindings/go v0.0.0-20210420032056-0511906b887e
+	github.com/apple/foundationdb/bindings/go v0.0.0-20211207225159-47b9a81d1c10
 	github.com/pkg/errors v0.8.1
 	github.com/prometheus/client_golang v1.3.0
 	github.com/prometheus/client_model v0.1.0

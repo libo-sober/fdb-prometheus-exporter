@@ -1,0 +1,69 @@
+name: Dev
+
+on: [push]
+
+defaults:
+  run:
+    shell: bash
+
+env:
+   IMAGE_REPOSITORY: public.ecr.aws/shopstic
+   IMAGE_NAME: fdb-prometheus-exporter
+
+jobs:
+  build:
+    name: Build image
+    runs-on: [self-hosted, nix]
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64]
+    steps:
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+
+      - name: Login to Amazon ECR
+        uses: ./.github/actions/login-to-public-ecr
+        with:
+          imageRepo: ${{ env.IMAGE_REPOSITORY }}
+
+      - name: Build container images
+        run: |-
+          nix build -L -v '.#packages.${{ matrix.arch }}-linux.image'
+
+      - name: Push
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+          NIX_ARCH: ${{ matrix.arch }}
+        shell: nix develop -v -c bash {0}
+        run: |-
+          IMAGE_ARCH="amd64"
+          if [[ "${NIX_ARCH}" == "aarch64" ]]; then
+            IMAGE_ARCH="arm64"
+          fi
+
+          IMAGE_TAG="dev-${IMAGE_ARCH}-${GITHUB_SHA}"
+
+          skopeo --insecure-policy copy \
+            docker-archive:./result \
+            docker://"${IMAGE_REPOSITORY}"/"${IMAGE_NAME}":"${IMAGE_TAG}"
+
+  push-multi-arch:
+    name: Push multi-arch image manifest
+    runs-on: [self-hosted, nix]
+    needs: [build]
+    steps:
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+
+      - name: Login to Amazon ECR
+        uses: ./.github/actions/login-to-public-ecr
+        with:
+          imageRepo: ${{ env.IMAGE_REPOSITORY }}
+
+      - name: Push multi-arch manifest
+        shell: nix develop -v -c bash {0}
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        run: |-
+          manifest-tool push from-args \
+            --platforms linux/amd64,linux/arm64 \
+            --template "${IMAGE_REPOSITORY}"/"${IMAGE_NAME}":dev-ARCH-"${GITHUB_SHA}" \
+            --target "${IMAGE_REPOSITORY}"/"${IMAGE_NAME}":dev-"${GITHUB_SHA}"
