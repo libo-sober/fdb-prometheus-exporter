@@ -6,11 +6,12 @@ var storageEngineMap = map[string]float64{
 	"ssd": 0,
 	"ssd-1": 1,
 	"ssd-2": 2,
-	"ssd-redwood-experimental": 3,
+	"ssd-redwood-1-experimental": 3,
 	"memory": 4,
 	"memory-1": 5,
 	"memory-2": 6,
 	"memory-radixtree-beta": 7,
+	"ssd-rocksdb-v1": 8,
 }
 
 var redundancyModeMap = map[string]float64 {
@@ -188,8 +189,12 @@ func (s FDBStatus) ExportConfiguration() {
 	}).Set(float64(len(s.Cluster.Configuration.ExcludedServers)))
 
 	configurationStatus.With(prometheus.Labels{
-		"component": "proxies",
-	}).Set(s.Cluster.Configuration.Proxies)
+		"component": "grv_proxies",
+	}).Set(s.Cluster.Configuration.GrvProxies)
+
+	configurationStatus.With(prometheus.Labels{
+		"component": "commit_proxies",
+	}).Set(s.Cluster.Configuration.CommitProxies)
 
 	configurationStatus.With(prometheus.Labels{
 		"component": "logs",

@@ -214,7 +214,8 @@ type FDBClusterConfigurationStatus struct {
 	ExcludedServers   []interface{} `json:"excluded_servers"`
 	LogSpill          float64       `json:"log_spill"`
 	Logs              float64       `json:"logs"`
-	Proxies           float64       `json:"proxies"`
+	GrvProxies        float64       `json:"grv_proxies"`
+	CommitProxies     float64       `json:"commit_proxies"`
 	RedundancyMode    string        `json:"redundancy_mode"`
 	Resolvers         float64       `json:"resolvers"`
 	StorageEngine     string        `json:"storage_engine"`

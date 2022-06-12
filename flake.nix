@@ -10,7 +10,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.utils.follows = "flakeUtils";
     };
-    fdb.url = "github:shopstic/nix-fdb";
+    fdb.url = "github:shopstic/nix-fdb/7.1.9";
   };
 
   outputs = { self, nixpkgs, flakeUtils, hotPot, gomod2nix, fdb }:
@@ -20,7 +20,7 @@
           pkgs = import nixpkgs {
             inherit system;
             overlays = [
-              gomod2nix.overlay
+              gomod2nix.overlays.default
             ];
           };
           hotPotPkgs = hotPot.packages.${system};
@@ -36,8 +36,9 @@
               "nix.serverPath" = pkgs.rnix-lsp + "/bin/rnix-lsp";
             };
           };
-          fdbBindings = fdb.defaultPackage.${system}.bindings;
-          fdbLib = fdb.defaultPackage.${system}.lib;
+          fdbPkg = fdb.packages.${system}.fdb_7;
+          fdbBindings = fdbPkg.bindings;
+          fdbLib = fdbPkg.lib;
           fdbPrometheusExporter = pkgs.callPackage ./build.nix
             {
               inherit fdbBindings fdbLib;
@@ -57,7 +58,10 @@
               mkdir -p ./.vscode
               cat ${vscodeSettings} > ./.vscode/settings.json
             '';
-            buildInputs = [ gomod2nix.defaultPackage.${system} ] ++ builtins.attrValues {
+            CGO_ENABLED = "1";
+            CGO_CFLAGS = "-I${fdbBindings}";
+            CGO_LDFLAGS = "-L${fdbLib}";
+            buildInputs = [ gomod2nix.packages.${system}.default ] ++ builtins.attrValues {
               inherit (hotPotPkgs)
                 manifest-tool
                 ;

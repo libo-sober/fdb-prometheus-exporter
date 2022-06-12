@@ -7,7 +7,7 @@
 }:
 buildGoApplication rec {
   pname = "fdb-prometheus-exporter";
-  version = "2.0.0";
+  version = "7.1.9";
   src = ./src;
   modules = ./src/gomod2nix.toml;
   CGO_ENABLED = "1";
